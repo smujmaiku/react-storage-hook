@@ -4,7 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = useStorage;
+exports.useDebounceCallback = useDebounceCallback;
 exports.useStorageState = useStorageState;
+exports.useStorageReducer = useStorageReducer;
+exports.DEBOUNCE_MS = void 0;
 
 var _react = require("react");
 
@@ -20,7 +23,17 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+var DEBOUNCE_MS = 10;
+/**
+ * use storage hook
+ * @param {string} key
+ * @param {function?} mutate
+ */
+
+exports.DEBOUNCE_MS = DEBOUNCE_MS;
+
 function useStorage(key) {
+  var mutate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
   var state = (0, _react.useMemo)(function () {
     try {
       var item = localStorage.getItem(key);
@@ -32,28 +45,84 @@ function useStorage(key) {
   }, [key]);
   var storeState = (0, _react.useCallback)(function (data) {
     try {
-      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(key, JSON.stringify(mutate ? mutate(data) : data));
     } catch (err) {
       console.error(err);
     }
-  }, [key]);
+  }, [key, mutate]);
   return [state, storeState];
 }
+/**
+ * Call function with state when changed
+ * @param {*} state
+ * @param {function} callback
+ * @param {number?} debounce
+ */
 
-function useStorageState(key, defaultState) {
-  var _useStorage = useStorage(key),
+
+function useDebounceCallback(state, callback) {
+  var debounce = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DEBOUNCE_MS;
+  (0, _react.useEffect)(function () {
+    var timer = setTimeout(function () {
+      callback(state);
+    }, debounce);
+    return function () {
+      clearTimeout(timer);
+    };
+  }, [state, callback, debounce]);
+}
+/**
+ * Use storage like useState
+ * @param {string} key
+ * @param {*?} defaultState
+ * @param {function?} mutate
+ */
+
+
+function useStorageState(key) {
+  var defaultState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+  var mutate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+
+  var _useStorage = useStorage(key, mutate),
       _useStorage2 = _slicedToArray(_useStorage, 2),
-      init = _useStorage2[0],
+      initState = _useStorage2[0],
       storeState = _useStorage2[1];
 
-  var _useState = (0, _react.useState)(init !== undefined ? init : defaultState),
+  var startState = initState !== undefined ? initState : defaultState;
+
+  var _useState = (0, _react.useState)(startState),
       _useState2 = _slicedToArray(_useState, 2),
       state = _useState2[0],
       setState = _useState2[1];
 
-  var saveState = (0, _react.useCallback)(function (data) {
-    setState(data);
-    storeState(data);
-  }, [storeState]);
-  return [state, saveState];
+  useDebounceCallback(state, storeState);
+  return [state, setState];
+}
+/**
+ * Use storage like useReducer
+ * @param {string} key localStorage key
+ * @param {function} reducer
+ * @param {*?} defaultState
+ * @param {function?} mutate
+ */
+
+
+function useStorageReducer(key, reducer) {
+  var defaultState = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+  var mutate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
+
+  var _useStorage3 = useStorage(key, mutate),
+      _useStorage4 = _slicedToArray(_useStorage3, 2),
+      initState = _useStorage4[0],
+      storeState = _useStorage4[1];
+
+  var startState = initState !== undefined ? initState : defaultState;
+
+  var _useReducer = (0, _react.useReducer)(reducer, startState),
+      _useReducer2 = _slicedToArray(_useReducer, 2),
+      state = _useReducer2[0],
+      dispatch = _useReducer2[1];
+
+  useDebounceCallback(state, storeState);
+  return [state, dispatch];
 }

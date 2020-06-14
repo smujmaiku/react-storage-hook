@@ -4,9 +4,16 @@
  * MIT Licensed
  */
 
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback, useState, useReducer, useEffect } from 'react';
 
-export default function useStorage(key) {
+export const DEBOUNCE_MS = 10;
+
+/**
+ * use storage hook
+ * @param {string} key
+ * @param {function?} mutate
+ */
+export default function useStorage(key, mutate = undefined) {
 	const state = useMemo(() => {
 		try {
 			const item = localStorage.getItem(key);
@@ -19,24 +26,64 @@ export default function useStorage(key) {
 
 	const storeState = useCallback((data) => {
 		try {
-			localStorage.setItem(key, JSON.stringify(data));
+			localStorage.setItem(key, JSON.stringify(
+				mutate ? mutate(data) : data,
+			));
 		} catch (err) {
 			console.error(err);
 		}
-	}, [key]);
+	}, [key, mutate]);
 
 	return [state, storeState];
 }
 
-export function useStorageState(key, defaultState) {
-	const [init, storeState] = useStorage(key);
+/**
+ * Call function with state when changed
+ * @param {*} state
+ * @param {function} callback
+ * @param {number?} debounce
+ */
+export function useDebounceCallback(state, callback, debounce = DEBOUNCE_MS) {
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			callback(state);
+		}, debounce);
 
-	const [state, setState] = useState(init !== undefined ? init : defaultState);
+		return () => {
+			clearTimeout(timer);
+		};
+	}, [state, callback, debounce]);
+}
 
-	const saveState = useCallback((data) => {
-		setState(data);
-		storeState(data);
-	}, [storeState]);
+/**
+ * Use storage like useState
+ * @param {string} key
+ * @param {*?} defaultState
+ * @param {function?} mutate
+ */
+export function useStorageState(key, defaultState = undefined, mutate = undefined) {
+	const [initState, storeState] = useStorage(key, mutate);
+	const startState = initState !== undefined ? initState : defaultState;
 
-	return [state, saveState];
+	const [state, setState] = useState(startState);
+	useDebounceCallback(state, storeState);
+
+	return [state, setState];
+}
+
+/**
+ * Use storage like useReducer
+ * @param {string} key localStorage key
+ * @param {function} reducer
+ * @param {*?} defaultState
+ * @param {function?} mutate
+ */
+export function useStorageReducer(key, reducer, defaultState = undefined, mutate = undefined) {
+	const [initState, storeState] = useStorage(key, mutate);
+	const startState = initState !== undefined ? initState : defaultState;
+
+	const [state, dispatch] = useReducer(reducer, startState);
+	useDebounceCallback(state, storeState);
+
+	return [state, dispatch];
 }
