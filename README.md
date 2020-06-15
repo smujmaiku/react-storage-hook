@@ -4,7 +4,7 @@ Some storage hooks
 
 ## Installation
 
-`npm i smujmaiku/just-storage-hooks`
+`npm i just-storage-hooks`
 
 ## Methods
 
