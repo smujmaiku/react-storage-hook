@@ -1,5 +1,5 @@
 {
-  "name": "react-storage-hooks",
+  "name": "just-storage-hooks",
   "version": "0.1.1",
   "description": "Some storage hooks",
   "main": "dist/storage.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smujmaiku/react-storage-hooks.git"
+    "url": "git+https://github.com/smujmaiku/just-storage-hooks.git"
   },
   "author": "Michael Szmadzinski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/smujmaiku/react-storage-hooks/issues"
+    "url": "https://github.com/smujmaiku/just-storage-hooks/issues"
   },
-  "homepage": "https://github.com/smujmaiku/react-storage-hooks#readme",
+  "homepage": "https://github.com/smujmaiku/just-storage-hooks#readme",
   "dependencies": {
     "react": "^16.13.1"
   },
