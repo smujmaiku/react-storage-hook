@@ -1,6 +1,6 @@
 {
   "name": "just-storage-hooks",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Some storage hooks",
   "main": "dist/storage.js",
   "scripts": {

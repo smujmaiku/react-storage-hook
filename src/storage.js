@@ -1,5 +1,5 @@
 /*!
- * React Storage Hooks <https://github.com/smujmaiku/react-storage-hooks>
+ * React Storage Hooks <https://github.com/smujmaiku/just-storage-hooks>
  * Copyright(c) 2020 Michael Szmadzinski
  * MIT Licensed
  */
@@ -26,9 +26,12 @@ export default function useStorage(key, mutate = undefined) {
 
 	const storeState = useCallback((data) => {
 		try {
-			localStorage.setItem(key, JSON.stringify(
-				mutate ? mutate(data) : data,
-			));
+			const value = mutate ? mutate(data) : data;
+			if (value === undefined || value === null || Number.isNaN(value)) {
+				localStorage.removeItem(key);
+			} else {
+				localStorage.setItem(key, JSON.stringify(value));
+			}
 		} catch (err) {
 			console.error(err);
 		}

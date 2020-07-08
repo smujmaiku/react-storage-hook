@@ -45,7 +45,13 @@ function useStorage(key) {
   }, [key]);
   var storeState = (0, _react.useCallback)(function (data) {
     try {
-      localStorage.setItem(key, JSON.stringify(mutate ? mutate(data) : data));
+      var value = mutate ? mutate(data) : data;
+
+      if (value === undefined || value === null || Number.isNaN(value)) {
+        localStorage.removeItem(key);
+      } else {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
     } catch (err) {
       console.error(err);
     }
