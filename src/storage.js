@@ -17,7 +17,6 @@ export default function useStorage(key, mutate = undefined) {
 	const state = useMemo(() => {
 		try {
 			const item = localStorage.getItem(key);
-			if (item === null) return undefined;
 			return JSON.parse(item);
 		} catch (err) {
 			return undefined;
@@ -27,7 +26,7 @@ export default function useStorage(key, mutate = undefined) {
 	const storeState = useCallback((data) => {
 		try {
 			const value = mutate ? mutate(data) : data;
-			if (value === undefined || value === null || Number.isNaN(value)) {
+			if (value === undefined) {
 				localStorage.removeItem(key);
 			} else {
 				localStorage.setItem(key, JSON.stringify(value));

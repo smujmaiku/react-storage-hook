@@ -37,7 +37,6 @@ function useStorage(key) {
   var state = (0, _react.useMemo)(function () {
     try {
       var item = localStorage.getItem(key);
-      if (item === null) return undefined;
       return JSON.parse(item);
     } catch (err) {
       return undefined;
@@ -47,7 +46,7 @@ function useStorage(key) {
     try {
       var value = mutate ? mutate(data) : data;
 
-      if (value === undefined || value === null || Number.isNaN(value)) {
+      if (value === undefined) {
         localStorage.removeItem(key);
       } else {
         localStorage.setItem(key, JSON.stringify(value));
