@@ -34,14 +34,24 @@ exports.DEBOUNCE_MS = DEBOUNCE_MS;
 
 function useStorage(key) {
   var mutate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
-  var state = (0, _react.useMemo)(function () {
+
+  var _useMemo = (0, _react.useMemo)(function () {
     try {
       var item = localStorage.getItem(key);
-      return JSON.parse(item);
+
+      if (item === null) {
+        return [null, true];
+      }
+
+      return [JSON.parse(item), false];
     } catch (err) {
-      return undefined;
+      return [undefined, true];
     }
-  }, [key]);
+  }, [key]),
+      _useMemo2 = _slicedToArray(_useMemo, 2),
+      state = _useMemo2[0],
+      wasUnset = _useMemo2[1];
+
   var storeState = (0, _react.useCallback)(function (data) {
     try {
       var value = mutate ? mutate(data) : data;
@@ -55,7 +65,9 @@ function useStorage(key) {
       console.error(err);
     }
   }, [key, mutate]);
-  return [state, storeState];
+  return [state, storeState, {
+    wasUnset: wasUnset
+  }];
 }
 /**
  * Call function with state when changed
@@ -89,11 +101,12 @@ function useStorageState(key) {
   var mutate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
 
   var _useStorage = useStorage(key, mutate),
-      _useStorage2 = _slicedToArray(_useStorage, 2),
+      _useStorage2 = _slicedToArray(_useStorage, 3),
       initState = _useStorage2[0],
-      storeState = _useStorage2[1];
+      storeState = _useStorage2[1],
+      wasUnset = _useStorage2[2].wasUnset;
 
-  var startState = initState !== undefined ? initState : defaultState;
+  var startState = wasUnset ? defaultState : initState;
 
   var _useState = (0, _react.useState)(startState),
       _useState2 = _slicedToArray(_useState, 2),
@@ -117,11 +130,12 @@ function useStorageReducer(key, reducer) {
   var mutate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
   var _useStorage3 = useStorage(key, mutate),
-      _useStorage4 = _slicedToArray(_useStorage3, 2),
+      _useStorage4 = _slicedToArray(_useStorage3, 3),
       initState = _useStorage4[0],
-      storeState = _useStorage4[1];
+      storeState = _useStorage4[1],
+      wasUnset = _useStorage4[2].wasUnset;
 
-  var startState = initState !== undefined ? initState : defaultState;
+  var startState = wasUnset ? defaultState : initState;
 
   var _useReducer = (0, _react.useReducer)(reducer, startState),
       _useReducer2 = _slicedToArray(_useReducer, 2),

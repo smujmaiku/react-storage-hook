@@ -14,12 +14,17 @@ export const DEBOUNCE_MS = 10;
  * @param {function?} mutate
  */
 export default function useStorage(key, mutate = undefined) {
-	const state = useMemo(() => {
+	const [state, wasUnset] = useMemo(() => {
 		try {
 			const item = localStorage.getItem(key);
-			return JSON.parse(item);
+
+			if (item === null) {
+				return [null, true];
+			}
+
+			return [JSON.parse(item), false];
 		} catch (err) {
-			return undefined;
+			return [undefined, true];
 		}
 	}, [key]);
 
@@ -36,7 +41,7 @@ export default function useStorage(key, mutate = undefined) {
 		}
 	}, [key, mutate]);
 
-	return [state, storeState];
+	return [state, storeState, { wasUnset }];
 }
 
 /**
@@ -64,8 +69,8 @@ export function useDebounceCallback(state, callback, debounce = DEBOUNCE_MS) {
  * @param {function?} mutate
  */
 export function useStorageState(key, defaultState = undefined, mutate = undefined) {
-	const [initState, storeState] = useStorage(key, mutate);
-	const startState = initState !== undefined ? initState : defaultState;
+	const [initState, storeState, { wasUnset }] = useStorage(key, mutate);
+	const startState = wasUnset ? defaultState : initState;
 
 	const [state, setState] = useState(startState);
 	useDebounceCallback(state, storeState);
@@ -81,8 +86,8 @@ export function useStorageState(key, defaultState = undefined, mutate = undefine
  * @param {function?} mutate
  */
 export function useStorageReducer(key, reducer, defaultState = undefined, mutate = undefined) {
-	const [initState, storeState] = useStorage(key, mutate);
-	const startState = initState !== undefined ? initState : defaultState;
+	const [initState, storeState, { wasUnset }] = useStorage(key, mutate);
+	const startState = wasUnset ? defaultState : initState;
 
 	const [state, dispatch] = useReducer(reducer, startState);
 	useDebounceCallback(state, storeState);
