@@ -2,14 +2,17 @@
   "name": "just-storage-hooks",
   "version": "0.1.6",
   "description": "Some storage hooks",
-  "main": "dist/storage.js",
+  "main": "lib/storage.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "lint": "eslint .",
     "test": "jest --watch",
     "test:ci": "jest",
     "test:coverage": "jest --coverage",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
-    "build": "rm -rf dist && mkdir dist && npx babel src/storage.js --out-file dist/storage.js"
+    "build": "rm -rf lib && mkdir lib && npx babel src/storage.js --out-file lib/storage.js"
   },
   "repository": {
     "type": "git",
