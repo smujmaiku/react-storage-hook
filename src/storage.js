@@ -6,7 +6,7 @@
 
 import { useMemo, useCallback, useState, useReducer, useEffect } from 'react';
 
-export const DEBOUNCE_MS = 10;
+export const DEBOUNCE_MS = 100;
 
 /**
  * use storage hook

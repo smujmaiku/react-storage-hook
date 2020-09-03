@@ -1,6 +1,9 @@
 # Just Storage Hooks
 
-Some storage hooks
+Do you have an input or checkbox you'd like to recover after a reload?
+Do you need to store your app's configuration page?
+
+Just use storage hooks with localStorage to ensure data is fresh on the first hook call.
 
 ## Installation
 
