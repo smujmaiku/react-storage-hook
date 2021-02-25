@@ -36,7 +36,7 @@ useDebounceCallback(state, callback, 10);
 Like useState but with localStorage when first starting the effect
 
 ```js
-const [state, setState] = useStorageState('key', { undefined: 'state' }, optionalMutate);
+const [state, setState] = useStorageState('key', { some: 'state' }, optionalMutate);
 ```
 
 ### useStorageReducer
@@ -44,9 +44,9 @@ const [state, setState] = useStorageState('key', { undefined: 'state' }, optiona
 Like useReducer but with localStorage when first starting the effect
 
 ```js
-const [state, dispatch] = useStorageReducer('key', reducer, { undefined: 'state' }, optionalMutate);
+const [state, dispatch] = useStorageReducer('key', reducer, { some: 'state' }, optionalMutate);
 ```
 
 ## License
 
-Copyright (c) 2020, Michael Szmadzinski. (MIT License)
+Copyright (c) 2021, Michael Szmadzinski. (MIT License)
