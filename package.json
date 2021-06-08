@@ -1,9 +1,9 @@
 {
   "name": "just-storage-hooks",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Some storage hooks",
-  "main": "lib/sync.js",
-  "types": "lib/sync.d.ts",
+  "main": "lib/storage.js",
+  "types": "lib/storage.d.ts",
   "directories": {
     "lib": "lib"
   },
@@ -24,14 +24,12 @@
     "url": "https://github.com/smujmaiku/just-storage-hooks/issues"
   },
   "homepage": "https://github.com/smujmaiku/just-storage-hooks#readme",
-  "dependencies": {
-    "react": "^16.13.1"
-  },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.1",
+    "@babel/preset-typescript": "^7.13.0",
     "@types/jest": "^26.0.13",
     "@types/react": "^16.9.49",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
@@ -46,6 +44,7 @@
     "eslint-plugin-react-hooks": "^4.1.2",
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^25.1.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-test-renderer": "^16.13.1",
     "typescript": "^4.0.2"
