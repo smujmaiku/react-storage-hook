@@ -1,0 +1,4 @@
+{
+	"main": "./storage.js",
+	"types": "./storage.d.ts"
+}
